@@ -1,9 +1,13 @@
 // ─────────────────────────────────────────────────────────────
 // js/new-leave-request.js — หน้าที่ 2 ยื่นใบลาใหม่
 // สัปดาห์ที่ 7: กดบันทึกแล้วเขียนใบลาใหม่ลง Firestore จริง (โฟลเดอร์ leaveRequests)
+// requesterId/requesterName มาจากผู้ใช้ที่ล็อกอินอยู่จริง
 // ─────────────────────────────────────────────────────────────
 
-(function () {
+(async function () {
+  var ผู้ใช้ปัจจุบัน = await ต้องล็อกอินก่อน();
+  if (!ผู้ใช้ปัจจุบัน) return;
+
   var ฟอร์ม = document.getElementById("ฟอร์มใบลา");
   var ช่องประเภท = document.getElementById("leaveTypeId");
   var กล่องเตือน = document.getElementById("ข้อความเตือน");
@@ -40,12 +44,12 @@
 
     var ประเภท = window.LEAVE_DATA.leaveTypes.find(function (t) { return t.id === ค่า.leaveTypeId; });
 
-    // สัปดาห์ที่ 7 ยังไม่มีล็อกอิน จึงสมมติว่าผู้ขอลาคือ สมชาย ใจดี
     var ใบใหม่ = {
       title: ค่า.title,
       reason: ค่า.reason,
       status: "รอพิจารณา",                       // ใบใหม่เริ่มที่ รอพิจารณา เสมอ
-      requesterId: "u001", requesterName: "สมชาย ใจดี",
+      requesterId: ผู้ใช้ปัจจุบัน.uid,
+      requesterName: ผู้ใช้ปัจจุบัน.displayName || ผู้ใช้ปัจจุบัน.email,
       approverId: "",      approverName: "",
       leaveTypeId: ประเภท.id, leaveTypeName: ประเภท.name,
       startDate: ค่า.startDate,

@@ -4,6 +4,9 @@
 // ─────────────────────────────────────────────────────────────
 
 (async function () {
+  var ผู้ใช้ปัจจุบัน = await ต้องล็อกอินก่อน();
+  if (!ผู้ใช้ปัจจุบัน) return;
+
   var รหัสใบลา = ค่าจากURL("id");
   var กล่องใบลา = document.getElementById("กล่องใบลา");
   var กล่องความเห็น = document.getElementById("กล่องความเห็น");
@@ -21,6 +24,13 @@
     ความเห็น = ความเห็นสแนปช็อต.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
   } catch (err) {
     กล่องใบลา.innerHTML = "<p>⚠️ อ่านข้อมูลจาก Firestore ไม่สำเร็จ: " + esc(err.message) + "</p>";
+    return;
+  }
+
+  // พนักงาน (employee) เปิดดูใบลาของคนอื่นไม่ได้ ตาม ACL.md
+  var role = await บทบาทผู้ใช้ปัจจุบัน(ผู้ใช้ปัจจุบัน.uid);
+  if (role === "employee" && ใบ.requesterId !== ผู้ใช้ปัจจุบัน.uid) {
+    กล่องใบลา.innerHTML = '<div class="alert alert-error">⚠️ คุณไม่มีสิทธิ์ดูใบลาของผู้อื่น</div>';
     return;
   }
 
@@ -47,20 +57,21 @@
       return '<div class="field-row"><span class="k">' + r[0] + "</span><span>" + r[1] + "</span></div>";
     }).join("");
 
-    // ปุ่มอนุมัติ / ไม่อนุมัติ ขึ้นเฉพาะใบที่ยังรอพิจารณา
-    if (ใบ.status === "รอพิจารณา") {
+    // ปุ่มอนุมัติ / ไม่อนุมัติ ขึ้นเฉพาะใบที่ยังรอพิจารณา และเฉพาะ role ที่มีสิทธิ์เปลี่ยนสถานะ (manager/hr) ตาม ACL.md
+    var มีสิทธิ์เปลี่ยนสถานะ = role === "manager" || role === "hr";
+    if (ใบ.status === "รอพิจารณา" && มีสิทธิ์เปลี่ยนสถานะ) {
       html +=
         '<div class="btn-row">' +
         '<button type="button" class="btn-ok" id="ปุ่มอนุมัติ">อนุมัติ</button>' +
         '<button type="button" class="btn-danger" id="ปุ่มไม่อนุมัติ">ไม่อนุมัติ</button>' +
         "</div>";
-    } else {
+    } else if (ใบ.status !== "รอพิจารณา") {
       html += '<p class="hint">ใบนี้พิจารณาแล้ว จึงเปลี่ยนสถานะต่อไม่ได้</p>';
     }
 
     กล่องใบลา.innerHTML = html;
 
-    if (ใบ.status === "รอพิจารณา") {
+    if (ใบ.status === "รอพิจารณา" && มีสิทธิ์เปลี่ยนสถานะ) {
       document.getElementById("ปุ่มอนุมัติ").addEventListener("click", function () { เปลี่ยนสถานะ("อนุมัติ"); });
       document.getElementById("ปุ่มไม่อนุมัติ").addEventListener("click", function () { เปลี่ยนสถานะ("ไม่อนุมัติ"); });
     }
@@ -121,9 +132,9 @@
     เตือน.classList.add("hidden");
     ปุ่ม.disabled = true;
 
-    // สัปดาห์ที่ 7 ยังไม่มีล็อกอิน จึงสมมติว่าผู้เขียนคือ สมหญิง รักงาน
     var ความเห็นใหม่ = {
-      authorId: "u002", authorName: "สมหญิง รักงาน",
+      authorId: ผู้ใช้ปัจจุบัน.uid,
+      authorName: ผู้ใช้ปัจจุบัน.displayName || ผู้ใช้ปัจจุบัน.email,
       message: ข้อความ,
       createdAt: เวลาตอนนี้()
     };

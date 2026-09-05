@@ -3,7 +3,19 @@
 // สัปดาห์ที่ 6 (ต้นสัปดาห์): เพิ่ม แก้ ลบ ในหน่วยความจำเท่านั้น
 // ─────────────────────────────────────────────────────────────
 
-(function () {
+(async function () {
+  var ผู้ใช้ปัจจุบัน = await ต้องล็อกอินก่อน();
+  if (!ผู้ใช้ปัจจุบัน) return;
+
+  // หน้านี้สำหรับฝ่ายบุคคล (hr) เท่านั้น ตาม ACL.md
+  var role = await บทบาทผู้ใช้ปัจจุบัน(ผู้ใช้ปัจจุบัน.uid);
+  if (role !== "hr") {
+    document.querySelector(".container").innerHTML =
+      '<h1>จัดการประเภทการลา</h1>' +
+      '<div class="alert alert-error">⚠️ หน้านี้สำหรับฝ่ายบุคคลเท่านั้น คุณไม่มีสิทธิ์เข้าใช้งาน</div>';
+    return;
+  }
+
   var รายการ = window.LEAVE_DATA.leaveTypes.slice();   // ทำสำเนาไว้แก้
   var ที่วางตาราง = document.getElementById("ตารางประเภท");
   var ช่องชื่อใหม่ = document.getElementById("ชื่อประเภทใหม่");

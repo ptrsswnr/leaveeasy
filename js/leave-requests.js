@@ -4,6 +4,9 @@
 // ─────────────────────────────────────────────────────────────
 
 (async function () {
+  var ผู้ใช้ปัจจุบัน = await ต้องล็อกอินก่อน();
+  if (!ผู้ใช้ปัจจุบัน) return;
+
   var กล่อง = document.getElementById("ผลลัพธ์");
 
   var ใบลาจากFirestore;
@@ -15,7 +18,11 @@
     return;
   }
 
-  var ใบลาทั้งหมด = ใบลาจากFirestore;
+  // พนักงาน (employee) เห็นเฉพาะใบลาของตัวเอง · ผู้อนุมัติ/ฝ่ายบุคคลเห็นทุกใบ ตาม ACL.md
+  var role = await บทบาทผู้ใช้ปัจจุบัน(ผู้ใช้ปัจจุบัน.uid);
+  var ใบลาทั้งหมด = role === "employee"
+    ? ใบลาจากFirestore.filter(function (ใบ) { return ใบ.requesterId === ผู้ใช้ปัจจุบัน.uid; })
+    : ใบลาจากFirestore;
 
   // บรรทัด "ทั้งหมด N ใบ" บนสุดของหน้า — นับรวมทุกใบ ไม่ว่าจะกรองสถานะไว้หรือไม่
   document.getElementById("จำนวนทั้งหมด").textContent = "ทั้งหมด " + ใบลาทั้งหมด.length + " ใบ";
