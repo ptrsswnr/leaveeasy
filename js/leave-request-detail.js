@@ -1,7 +1,6 @@
 // ─────────────────────────────────────────────────────────────
 // js/leave-request-detail.js — หน้าที่ 3 รายละเอียดใบลา
-// สัปดาห์ที่ 6: อ่านใบลาและความเห็นจาก Firestore จริง (เปลี่ยนสถานะ/ส่งความเห็น
-// ยังทำแค่ในหน่วยความจำ — การเขียนกลับ Firestore เป็นงานสัปดาห์ที่ 7)
+// สัปดาห์ที่ 7: อ่าน/เขียนใบลา สถานะ และความเห็น กับ Firestore จริงทั้งหมด
 // ─────────────────────────────────────────────────────────────
 
 (async function () {
@@ -9,26 +8,17 @@
   var กล่องใบลา = document.getElementById("กล่องใบลา");
   var กล่องความเห็น = document.getElementById("กล่องความเห็น");
 
-  // ใบที่เพิ่งยื่นในหน้าที่ 2 ยังไม่มีใน Firestore (สัปดาห์นี้ยังไม่เขียนลงฐานข้อมูล) จึงเช็คในนี้ก่อน
-  var ใบลาที่ยื่นใหม่ = JSON.parse(sessionStorage.getItem("ใบลาที่ยื่นใหม่") || "[]");
-  var ใบจากที่ยื่นใหม่ = ใบลาที่ยื่นใหม่.find(function (x) { return x.id === รหัสใบลา; });
-
   var ใบ, ความเห็น;
   try {
-    if (ใบจากที่ยื่นใหม่) {
-      ใบ = ใบจากที่ยื่นใหม่;
-      ความเห็น = [];
-    } else {
-      var เอกสารใบลา = await db.collection("leaveRequests").doc(รหัสใบลา).get();
-      if (!เอกสารใบลา.exists) {
-        กล่องใบลา.innerHTML = "<p>ไม่พบใบขอลาที่ต้องการ — อาจถูกลบไปแล้ว หรือลิงก์ไม่ถูกต้อง</p>";
-        return;
-      }
-      ใบ = Object.assign({ id: เอกสารใบลา.id }, เอกสารใบลา.data());
-
-      var ความเห็นสแนปช็อต = await db.collection("leaveRequests").doc(รหัสใบลา).collection("approvals").get();
-      ความเห็น = ความเห็นสแนปช็อต.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
+    var เอกสารใบลา = await db.collection("leaveRequests").doc(รหัสใบลา).get();
+    if (!เอกสารใบลา.exists) {
+      กล่องใบลา.innerHTML = "<p>ไม่พบใบขอลาที่ต้องการ — อาจถูกลบไปแล้ว หรือลิงก์ไม่ถูกต้อง</p>";
+      return;
     }
+    ใบ = Object.assign({ id: เอกสารใบลา.id }, เอกสารใบลา.data());
+
+    var ความเห็นสแนปช็อต = await db.collection("leaveRequests").doc(รหัสใบลา).collection("approvals").get();
+    ความเห็น = ความเห็นสแนปช็อต.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
   } catch (err) {
     กล่องใบลา.innerHTML = "<p>⚠️ อ่านข้อมูลจาก Firestore ไม่สำเร็จ: " + esc(err.message) + "</p>";
     return;
@@ -76,15 +66,28 @@
     }
   }
 
-  // ── เปลี่ยนสถานะ (สัปดาห์นี้เปลี่ยนแค่ในหน่วยความจำ) ──
-  function เปลี่ยนสถานะ(สถานะใหม่) {
+  // ── เปลี่ยนสถานะ — เขียนกลับ Firestore จริง แก้เฉพาะช่อง status เท่านั้น ──
+  async function เปลี่ยนสถานะ(สถานะใหม่) {
     // กฎ: จะไม่อนุมัติได้ ต้องมีความเห็นอย่างน้อย 1 รายการก่อน
     if (สถานะใหม่ === "ไม่อนุมัติ" && ความเห็น.length === 0) {
       alert("ต้องเขียนความเห็นอย่างน้อย 1 รายการก่อน จึงจะกดไม่อนุมัติได้");
       return;
     }
-    ใบ.status = สถานะใหม่;   // แก้เฉพาะช่อง status เท่านั้น
-    วาดใบลา();
+
+    var ปุ่มอนุมัติ = document.getElementById("ปุ่มอนุมัติ");
+    var ปุ่มไม่อนุมัติ = document.getElementById("ปุ่มไม่อนุมัติ");
+    ปุ่มอนุมัติ.disabled = true;
+    ปุ่มไม่อนุมัติ.disabled = true;
+
+    try {
+      await db.collection("leaveRequests").doc(ใบ.id).update({ status: สถานะใหม่ });
+      ใบ.status = สถานะใหม่;
+      วาดใบลา();
+    } catch (err) {
+      alert("เปลี่ยนสถานะไม่สำเร็จ: " + err.message);
+      ปุ่มอนุมัติ.disabled = false;
+      ปุ่มไม่อนุมัติ.disabled = false;
+    }
   }
 
   // ── รายการความเห็น เรียงจากเก่าไปใหม่ ──
@@ -103,10 +106,11 @@
       }).join("");
   }
 
-  // ── ส่งความเห็นใหม่ ──
-  function ส่งความเห็น() {
+  // ── ส่งความเห็นใหม่ — เขียนลงโฟลเดอร์ย่อย approvals ของใบนี้ใน Firestore จริง ──
+  async function ส่งความเห็น() {
     var ช่อง = document.getElementById("ข้อความความเห็น");
     var เตือน = document.getElementById("เตือนความเห็น");
+    var ปุ่ม = document.getElementById("ปุ่มส่งความเห็น");
     var ข้อความ = ช่อง.value.trim();
 
     if (!ข้อความ) {
@@ -115,16 +119,25 @@
       return;
     }
     เตือน.classList.add("hidden");
+    ปุ่ม.disabled = true;
 
-    // สัปดาห์ที่ 6 ยังไม่มีล็อกอิน จึงสมมติว่าผู้เขียนคือ สมหญิง รักงาน
-    ความเห็น.push({
-      id: "ap-ใหม่-" + Date.now(),
-      requestId: ใบ.id,
+    // สัปดาห์ที่ 7 ยังไม่มีล็อกอิน จึงสมมติว่าผู้เขียนคือ สมหญิง รักงาน
+    var ความเห็นใหม่ = {
       authorId: "u002", authorName: "สมหญิง รักงาน",
       message: ข้อความ,
       createdAt: เวลาตอนนี้()
-    });
-    ช่อง.value = "";
-    วาดความเห็น();
+    };
+
+    try {
+      var เอกสารใหม่ = await db.collection("leaveRequests").doc(ใบ.id).collection("approvals").add(ความเห็นใหม่);
+      ความเห็น.push(Object.assign({ id: เอกสารใหม่.id }, ความเห็นใหม่));
+      ช่อง.value = "";
+      วาดความเห็น();
+    } catch (err) {
+      เตือน.textContent = "⚠️ ส่งความเห็นไม่สำเร็จ: " + err.message;
+      เตือน.classList.remove("hidden");
+    } finally {
+      ปุ่ม.disabled = false;
+    }
   }
 })();
