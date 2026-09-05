@@ -38,7 +38,12 @@
   วาดความเห็น();
   กล่องความเห็น.classList.remove("hidden");
 
-  document.getElementById("ปุ่มส่งความเห็น").addEventListener("click", ส่งความเห็น);
+  // employee เขียนความเห็นการอนุมัติไม่ได้ — เป็นสิทธิ์ของผู้อนุมัติ/ฝ่ายบุคคลเท่านั้น (US-05)
+  if (role === "employee") {
+    document.getElementById("กล่องเขียนความเห็น").classList.add("hidden");
+  } else {
+    document.getElementById("ปุ่มส่งความเห็น").addEventListener("click", ส่งความเห็น);
+  }
 
   // ── วาดข้อมูลใบลาลงหน้าจอ ──
   function วาดใบลา() {
@@ -59,6 +64,9 @@
 
     // ปุ่มอนุมัติ / ไม่อนุมัติ ขึ้นเฉพาะใบที่ยังรอพิจารณา และเฉพาะ role ที่มีสิทธิ์เปลี่ยนสถานะ (manager/hr) ตาม ACL.md
     var มีสิทธิ์เปลี่ยนสถานะ = role === "manager" || role === "hr";
+    // ปุ่มลบ ขึ้นเฉพาะใบที่ยังรอพิจารณา และเฉพาะเจ้าของใบ (employee) ตาม ACL.md/US-07
+    var มีสิทธิ์ลบ = role === "employee";
+
     if (ใบ.status === "รอพิจารณา" && มีสิทธิ์เปลี่ยนสถานะ) {
       html +=
         '<div class="btn-row">' +
@@ -69,11 +77,41 @@
       html += '<p class="hint">ใบนี้พิจารณาแล้ว จึงเปลี่ยนสถานะต่อไม่ได้</p>';
     }
 
+    if (ใบ.status === "รอพิจารณา" && มีสิทธิ์ลบ) {
+      html +=
+        '<div class="btn-row">' +
+        '<button type="button" class="btn-danger" id="ปุ่มลบ">ลบใบลานี้</button>' +
+        "</div>";
+    }
+
     กล่องใบลา.innerHTML = html;
 
     if (ใบ.status === "รอพิจารณา" && มีสิทธิ์เปลี่ยนสถานะ) {
       document.getElementById("ปุ่มอนุมัติ").addEventListener("click", function () { เปลี่ยนสถานะ("อนุมัติ"); });
       document.getElementById("ปุ่มไม่อนุมัติ").addEventListener("click", function () { เปลี่ยนสถานะ("ไม่อนุมัติ"); });
+    }
+    if (ใบ.status === "รอพิจารณา" && มีสิทธิ์ลบ) {
+      document.getElementById("ปุ่มลบ").addEventListener("click", ลบใบลา);
+    }
+  }
+
+  // ── ลบใบลา — ต้องยืนยันก่อนเสมอ ลบได้เฉพาะใบที่ยังรอพิจารณา ──
+  async function ลบใบลา() {
+    if (!confirm("ยืนยันการลบใบลานี้ หรือไม่ — ลบแล้วกู้คืนไม่ได้")) return;
+
+    var ปุ่ม = document.getElementById("ปุ่มลบ");
+    ปุ่ม.disabled = true;
+
+    try {
+      var ความเห็นสแนปช็อต = await db.collection("leaveRequests").doc(ใบ.id).collection("approvals").get();
+      for (var i = 0; i < ความเห็นสแนปช็อต.docs.length; i++) {
+        await db.collection("leaveRequests").doc(ใบ.id).collection("approvals").doc(ความเห็นสแนปช็อต.docs[i].id).delete();
+      }
+      await db.collection("leaveRequests").doc(ใบ.id).delete();
+      location.href = "leave-requests.html";
+    } catch (err) {
+      alert("ลบไม่สำเร็จ: " + err.message);
+      ปุ่ม.disabled = false;
     }
   }
 

@@ -94,6 +94,16 @@ leaveRequests/{id}      { title, reason, status, startDate, endDate, createdAt,
 
 **แก้ `firestore.rules` แล้วต้องรัน `firebase deploy --only firestore:rules` เสมอ ไม่งั้นแก้แต่ไฟล์เฉย ๆ ไม่มีผลอะไรกับระบบจริง** และหลัง deploy กฎใหม่ต้องรอ **20-30 วินาที** ก่อนที่กฎจะมีผลจริง (ทดสอบทันทีหลัง deploy แล้วเหมือนกฎยังไม่ทำงาน อย่าเพิ่งสรุปว่าพัง ให้รอแล้วลองใหม่)
 
+### Firebase Hosting
+
+เว็บ deploy ขึ้น Firebase Hosting แล้วที่ **https://leaveeasy-puttaraksa.web.app** — ตั้งค่าไว้ใน `firebase.json` ช่อง `"hosting"` (`public: "."` เพราะเว็บอยู่ที่ root ของโปรเจกต์ ไม่ได้อยู่ในโฟลเดอร์ `public/`, ไม่ทำ single-page-app rewrite เพราะมีหลายหน้าไฟล์จริง)
+
+**⚠️ ข้อควรระวังที่พลาดกันบ่อย: `git push` กับ `firebase deploy` เป็นคนละระบบกันโดยสิ้นเชิง** — push ขึ้น GitHub แล้ว **ไม่ได้แปลว่าเว็บจริงที่ `.web.app` จะอัปเดตตาม** ต้องรัน `firebase deploy` (หรือ `firebase deploy --only hosting`) ทุกครั้งที่แก้ไฟล์แล้วอยากให้เว็บจริงเปลี่ยนตาม — ถ้าผู้ใช้บอกว่า "push/commit แล้วแต่เว็บจริงไม่เปลี่ยน" นี่คือสาเหตุอันดับแรกที่ต้องนึกถึง
+
+เพราะ public directory คือทั้งโปรเจกต์ (`.`) ไฟล์เอกสารอย่าง `CLAUDE.md`, `ACL.md`, `leaveeasy-spec.md`, `README.md` ก็ถูก deploy ขึ้นเว็บสาธารณะไปด้วย (เปิดตรง เช่น `https://leaveeasy-puttaraksa.web.app/CLAUDE.md` ได้จริง) — ไม่มีคีย์ลับอยู่ในไฟล์เหล่านี้ จึงไม่ใช่ปัญหาความปลอดภัย แค่ไม่เรียบร้อย ถ้าต้องการกันไฟล์เหล่านี้ไม่ให้ deploy ขึ้นเว็บจริง ให้เพิ่มรายการเข้าไปในช่อง `"ignore"` ของ `firebase.json`
+
+`.firebase/` (โฟลเดอร์แคชที่ `firebase deploy` สร้างไว้ในเครื่อง) ถูกกันไว้ใน `.gitignore` แล้ว ไม่ต้อง commit
+
 ## ข้อห้ามสำคัญ: ห้ามใส่คีย์ลงไฟล์ที่ push
 
 **ห้ามใส่ API key, secret, token หรือข้อมูลลับอื่นใดลงในไฟล์ที่จะถูก push ขึ้น GitHub** ก่อน commit หรือ push ทุกครั้ง ให้ตรวจเนื้อหาไฟล์ที่ staged จริง ๆ ด้วยตา ไม่ใช่แค่ดูชื่อไฟล์ (ไฟล์ชื่อดูไม่มีพิษภัยก็อาจมีคีย์แอบอยู่ในเนื้อหาได้)
