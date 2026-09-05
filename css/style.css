@@ -4,10 +4,10 @@
    ───────────────────────────────────────────────────────────── */
 
 :root {
-  --สีหลัก: #1f5f8b;
-  --สีหลักเข้ม: #14405f;
-  --สีพื้น: #f4f6f8;
-  --สีขอบ: #d8dee4;
+  --สีหลัก: #c2410c;
+  --สีหลักเข้ม: #9a3412;
+  --สีพื้น: #fdf6f2;
+  --สีขอบ: #e8dad2;
   --สีตัวอักษร: #22282e;
   --สีจาง: #667380;
 }
@@ -23,6 +23,9 @@ body {
   background: var(--สีพื้น);
 }
 
+a { color: var(--สีหลัก); }
+a:hover { color: var(--สีหลักเข้ม); }
+
 /* ── แถบเมนูด้านบน ── */
 .navbar {
   background: var(--สีหลัก);
@@ -34,6 +37,7 @@ body {
   gap: 6px 18px;
 }
 .navbar .brand { font-weight: 700; font-size: 20px; margin-right: 10px; }
+.navbar #navเมนูหลัก, .navbar #navเมนูฝ่ายบุคคล { display: inline-flex; flex-wrap: wrap; gap: 4px 18px; }
 .navbar a { color: #fff; text-decoration: none; padding: 4px 2px; }
 .navbar a:hover, .navbar a.active { border-bottom: 3px solid #ffd166; }
 .navbar .nav-user { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 15px; }
