@@ -1,24 +1,38 @@
 // ─────────────────────────────────────────────────────────────
 // js/leave-request-detail.js — หน้าที่ 3 รายละเอียดใบลา
-// สัปดาห์ที่ 6 (ต้นสัปดาห์): อ่านจากข้อมูลปลอม และเปลี่ยนสถานะในหน่วยความจำ
+// สัปดาห์ที่ 6: อ่านใบลาและความเห็นจาก Firestore จริง (เปลี่ยนสถานะ/ส่งความเห็น
+// ยังทำแค่ในหน่วยความจำ — การเขียนกลับ Firestore เป็นงานสัปดาห์ที่ 7)
 // ─────────────────────────────────────────────────────────────
 
-(function () {
+(async function () {
   var รหัสใบลา = ค่าจากURL("id");
   var กล่องใบลา = document.getElementById("กล่องใบลา");
   var กล่องความเห็น = document.getElementById("กล่องความเห็น");
 
-  // หาใบลาจากข้อมูลปลอม บวกกับใบที่เพิ่งยื่นในหน้าที่ 2
+  // ใบที่เพิ่งยื่นในหน้าที่ 2 ยังไม่มีใน Firestore (สัปดาห์นี้ยังไม่เขียนลงฐานข้อมูล) จึงเช็คในนี้ก่อน
   var ใบลาที่ยื่นใหม่ = JSON.parse(sessionStorage.getItem("ใบลาที่ยื่นใหม่") || "[]");
-  var ใบ = window.LEAVE_DATA.leaveRequests.concat(ใบลาที่ยื่นใหม่)
-    .find(function (x) { return x.id === รหัสใบลา; });
+  var ใบจากที่ยื่นใหม่ = ใบลาที่ยื่นใหม่.find(function (x) { return x.id === รหัสใบลา; });
 
-  if (!ใบ) {
-    กล่องใบลา.innerHTML = "<p>ไม่พบใบขอลาที่ต้องการ — อาจถูกลบไปแล้ว หรือลิงก์ไม่ถูกต้อง</p>";
+  var ใบ, ความเห็น;
+  try {
+    if (ใบจากที่ยื่นใหม่) {
+      ใบ = ใบจากที่ยื่นใหม่;
+      ความเห็น = [];
+    } else {
+      var เอกสารใบลา = await db.collection("leaveRequests").doc(รหัสใบลา).get();
+      if (!เอกสารใบลา.exists) {
+        กล่องใบลา.innerHTML = "<p>ไม่พบใบขอลาที่ต้องการ — อาจถูกลบไปแล้ว หรือลิงก์ไม่ถูกต้อง</p>";
+        return;
+      }
+      ใบ = Object.assign({ id: เอกสารใบลา.id }, เอกสารใบลา.data());
+
+      var ความเห็นสแนปช็อต = await db.collection("leaveRequests").doc(รหัสใบลา).collection("approvals").get();
+      ความเห็น = ความเห็นสแนปช็อต.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
+    }
+  } catch (err) {
+    กล่องใบลา.innerHTML = "<p>⚠️ อ่านข้อมูลจาก Firestore ไม่สำเร็จ: " + esc(err.message) + "</p>";
     return;
   }
-
-  var ความเห็น = window.LEAVE_DATA.approvals.filter(function (c) { return c.requestId === ใบ.id; });
 
   วาดใบลา();
   วาดความเห็น();

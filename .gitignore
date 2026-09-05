@@ -2,9 +2,6 @@
 # .gitignore ของโครงงาน LeaveEasy
 #
 # ไฟล์นี้คือ "รายชื่อสิ่งที่ห้ามส่งขึ้น GitHub"
-#
-# 📌 ตอนนี้กันไว้แค่ไฟล์ขยะที่เครื่องมือสร้างเอง
-#    ส่วนการกันไฟล์ที่มีคีย์ คุณจะได้เพิ่มเองในสัปดาห์ที่ 7
 # ─────────────────────────────────────────────────────────────
 
 
@@ -19,6 +16,39 @@ desktop.ini
 *.log
 .vscode/
 .idea/
+.obsidian/
+
+
+# ── ไฟล์ตั้งค่าและไฟล์ที่มีคีย์/ความลับ (ห้าม push เด็ดขาด) ──
+# ⚠️ ข้อยกเว้นเดียว: js/firebase-config.js ที่มี apiKey ของเว็บแอปฝังอยู่
+#    ไม่ต้องกันไฟล์นั้น เพราะ apiKey ฝั่งเว็บของ Firebase ไม่ใช่ความลับ
+#    (ความปลอดภัยจริงมาจาก Firestore Security Rules) — ดูรายละเอียดใน CLAUDE.md
+
+# ตัวแปรสภาพแวดล้อม (environment variables) — ที่เก็บคีย์จริงเวลาต่อ AI/บริการภายนอก
+.env
+.env.*
+!.env.example
+
+# คีย์ของ Firebase Admin SDK / service account — ต่างจาก apiKey ฝั่งเว็บ นี่คือของจริงที่ห้ามหลุด
+*serviceAccountKey*.json
+*service-account*.json
+*-firebase-adminsdk-*.json
+.runtimeconfig.json
+firebase-debug.log
+
+# ไฟล์คีย์/ใบรับรองทั่วไป
+*.pem
+*.key
+*.p12
+*.pfx
+
+# ไฟล์ตั้งค่าเฉพาะเครื่องหรือไฟล์ที่ตั้งใจเก็บความลับ
+*.local
+*.local.js
+*.local.json
+secrets.json
+secrets/
+config.secret.js
 
 
 # ─────────────────────────────────────────────────────────────
