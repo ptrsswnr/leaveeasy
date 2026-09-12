@@ -1,15 +1,19 @@
 /* ─────────────────────────────────────────────────────────────
    css/style.css — หน้าตาที่ใช้ร่วมกันทุกหน้าของ LeaveEasy
-   แก้ที่ไฟล์นี้ที่เดียว ทุกหน้าเปลี่ยนตามพร้อมกัน
+   ธีม Claymorphism (สดใส สนุกสนาน) — แก้ที่ไฟล์นี้ที่เดียว ทุกหน้าเปลี่ยนตาม
    ───────────────────────────────────────────────────────────── */
 
 :root {
-  --สีหลัก: #c2410c;
-  --สีหลักเข้ม: #9a3412;
-  --สีพื้น: #fdf6f2;
-  --สีขอบ: #e8dad2;
-  --สีตัวอักษร: #22282e;
-  --สีจาง: #667380;
+  --สีหลัก: #8b5cf6;
+  --สีหลักเข้ม: #7c3aed;
+  --สีพื้น: #efe9ff;
+  --สีเส้นบาง: #ddd3fb;
+  --สีตัวอักษร: #362a5e;
+  --สีจาง: #7c6fa0;
+  --สีอันตราย: #fb7185;
+  --สีสำเร็จ: #34d399;
+  --เงาเข้ม: rgba(139, 122, 191, 0.45);
+  --เงาสว่าง: rgba(255, 255, 255, 0.85);
 }
 
 * { box-sizing: border-box; }
@@ -23,131 +27,155 @@ body {
   background: var(--สีพื้น);
 }
 
-a { color: var(--สีหลัก); }
-a:hover { color: var(--สีหลักเข้ม); }
+a { color: var(--สีหลักเข้ม); }
+a:hover { color: var(--สีหลัก); }
 
 /* ── แถบเมนูด้านบน ── */
 .navbar {
-  background: var(--สีหลัก);
-  color: #fff;
-  padding: 10px 16px;
+  background: var(--สีพื้น);
+  color: var(--สีตัวอักษร);
+  padding: 14px 20px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 6px 18px;
+  box-shadow: 0 8px 16px var(--เงาเข้ม), 0 -4px 12px var(--เงาสว่าง);
 }
-.navbar .brand { font-weight: 700; font-size: 20px; margin-right: 10px; }
+.navbar .brand { font-weight: 800; font-size: 22px; margin-right: 10px; color: var(--สีหลักเข้ม); }
 .navbar #navเมนูหลัก, .navbar #navเมนูฝ่ายบุคคล { display: inline-flex; flex-wrap: wrap; gap: 4px 18px; }
-.navbar a { color: #fff; text-decoration: none; padding: 4px 2px; }
-.navbar a:hover, .navbar a.active { border-bottom: 3px solid #ffd166; }
+.navbar a { color: var(--สีตัวอักษร); text-decoration: none; padding: 6px 4px; font-weight: 600; }
+.navbar a:hover, .navbar a.active { color: var(--สีหลักเข้ม); }
 .navbar .nav-user { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 15px; }
 .navbar .nav-user a { border-bottom: none; }
-.navbar .nav-user button { padding: 4px 10px; font-size: 14px; }
+.navbar .nav-user button { padding: 8px 16px; font-size: 15px; }
 
 /* ── กรอบเนื้อหา ── */
-.container { max-width: 960px; margin: 0 auto; padding: 20px 16px 60px; }
-h1 { font-size: 28px; margin: 18px 0 6px; }
-h2 { font-size: 22px; margin: 26px 0 8px; }
+.container { max-width: 960px; margin: 0 auto; padding: 28px 16px 60px; }
+h1 { font-size: 30px; margin: 18px 0 6px; font-weight: 800; }
+h2 { font-size: 22px; margin: 26px 0 8px; font-weight: 800; }
 .subtitle { color: var(--สีจาง); margin-top: 0; }
 
 .card {
-  background: #fff;
-  border: 1px solid var(--สีขอบ);
-  border-radius: 10px;
-  padding: 18px;
-  margin-bottom: 18px;
+  background: var(--สีพื้น);
+  border: none;
+  border-radius: 24px;
+  padding: 22px;
+  margin-bottom: 22px;
+  box-shadow: 10px 10px 22px var(--เงาเข้ม), -10px -10px 22px var(--เงาสว่าง);
 }
 
 /* ── ตาราง ── */
-table { width: 100%; border-collapse: collapse; background: #fff; }
-th, td { padding: 10px 12px; border-bottom: 1px solid var(--สีขอบ); text-align: left; }
-th { background: #eef2f5; font-weight: 700; }
-tbody tr.clickable:hover { background: #eaf3fa; cursor: pointer; }
+table { width: 100%; border-collapse: separate; border-spacing: 0 10px; background: transparent; }
+th, td { padding: 12px 14px; text-align: left; }
+th { font-weight: 700; color: var(--สีจาง); }
+tbody tr {
+  background: var(--สีพื้น);
+  box-shadow: 5px 5px 12px var(--เงาเข้ม), -5px -5px 12px var(--เงาสว่าง);
+  border-radius: 16px;
+}
+tbody tr td:first-child { border-radius: 16px 0 0 16px; }
+tbody tr td:last-child { border-radius: 0 16px 16px 0; }
+tbody tr.clickable { cursor: pointer; }
+tbody tr.clickable:hover { box-shadow: inset 4px 4px 10px var(--เงาเข้ม), inset -4px -4px 10px var(--เงาสว่าง); }
 
 /* ── ป้ายสถานะ ── */
 .badge {
   display: inline-block;
-  padding: 3px 12px;
+  padding: 6px 16px;
   border-radius: 999px;
-  font-size: 15px;
+  font-size: 14px;
+  font-weight: 700;
   white-space: nowrap;
+  box-shadow: 3px 3px 8px var(--เงาเข้ม), -3px -3px 8px var(--เงาสว่าง);
 }
-.badge-รอพิจารณา { background: #fff3cd; color: #7a5b00; border: 1px solid #ffe08a; }
-.badge-อนุมัติ   { background: #d8f3dc; color: #1b5e34; border: 1px solid #a8dfb8; }
-.badge-ไม่อนุมัติ { background: #fde2e1; color: #8b1f1a; border: 1px solid #f6b8b5; }
+.badge-รอพิจารณา { background: #fef3c7; color: #92400e; }
+.badge-อนุมัติ   { background: #d1fae5; color: #065f46; }
+.badge-ไม่อนุมัติ { background: #fecdd3; color: #9f1239; }
 
 /* ── ปุ่ม ── */
 button, .btn {
   font-family: inherit;
   font-size: 17px;
-  padding: 9px 18px;
-  border-radius: 8px;
-  border: 1px solid var(--สีหลัก);
+  font-weight: 700;
+  padding: 12px 24px;
+  border-radius: 16px;
+  border: none;
   background: var(--สีหลัก);
   color: #fff;
   cursor: pointer;
   text-decoration: none;
   display: inline-block;
+  box-shadow: 6px 6px 14px var(--เงาเข้ม), -6px -6px 14px var(--เงาสว่าง);
+  transition: box-shadow .15s, transform .15s, filter .15s;
 }
-button:hover, .btn:hover { background: var(--สีหลักเข้ม); }
+button:hover, .btn:hover { transform: translateY(-2px); filter: brightness(0.95); }
+button:active, .btn:active { box-shadow: inset 4px 4px 10px rgba(0,0,0,.25); transform: translateY(0); }
 button:disabled { opacity: .55; cursor: not-allowed; }
-.btn-ghost { background: #fff; color: var(--สีหลัก); }
-.btn-ghost:hover { background: #e8f1f8; }
-.btn-danger { background: #b3261e; border-color: #b3261e; }
-.btn-danger:hover { background: #8c1c16; }
-.btn-ok { background: #1b7f45; border-color: #1b7f45; }
-.btn-ok:hover { background: #146134; }
-.btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.btn-ghost { background: var(--สีพื้น); color: var(--สีหลักเข้ม); }
+.btn-danger { background: var(--สีอันตราย); }
+.btn-ok { background: var(--สีสำเร็จ); }
+.btn-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
 
 /* ── ฟอร์ม ── */
-label { display: block; font-weight: 700; margin: 14px 0 4px; }
+label { display: block; font-weight: 700; margin: 16px 0 6px; }
 input, select, textarea {
   font-family: inherit;
   font-size: 17px;
   width: 100%;
-  padding: 9px 10px;
-  border: 1px solid var(--สีขอบ);
-  border-radius: 8px;
+  padding: 12px 14px;
+  border: 2px solid #fff;
+  border-radius: 14px;
   background: #fff;
+  color: var(--สีตัวอักษร);
+  box-shadow: inset 3px 3px 8px var(--เงาเข้ม), inset -3px -3px 8px var(--เงาสว่าง);
 }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--สีหลัก); }
 textarea { min-height: 110px; resize: vertical; }
 .hint { color: var(--สีจาง); font-size: 15px; margin-top: 4px; }
 
 /* ── กล่องข้อความแจ้งเตือน ── */
-.alert { padding: 12px 14px; border-radius: 8px; margin: 12px 0; }
-.alert-warn  { background: #fff8e1; border: 1px solid #ffd54f; color: #6d4c00; }
-.alert-error { background: #fdecea; border: 1px solid #f5b3ad; color: #8b1f1a; }
-.alert-ok    { background: #e8f5e9; border: 1px solid #a5d6a7; color: #1b5e34; }
-.alert-ai    { background: #eef4ff; border: 1px solid #b9ccf5; color: #1a3e7a; }
+.alert { padding: 14px 18px; border-radius: 16px; margin: 14px 0; box-shadow: 4px 4px 10px var(--เงาเข้ม), -4px -4px 10px var(--เงาสว่าง); }
+.alert-warn  { background: #fef3c7; color: #92400e; }
+.alert-error { background: #fecdd3; color: #9f1239; }
+.alert-ok    { background: #d1fae5; color: #065f46; }
+.alert-ai    { background: #ddd6fe; color: #4c1d95; }
 .hidden { display: none; }
 
 /* ── รายการความเห็น ── */
-.comment { border-left: 4px solid var(--สีขอบ); padding: 6px 0 6px 12px; margin-bottom: 12px; }
+.comment {
+  background: var(--สีพื้น);
+  border-radius: 14px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  box-shadow: 4px 4px 10px var(--เงาเข้ม), -4px -4px 10px var(--เงาสว่าง);
+}
 .comment .meta { color: var(--สีจาง); font-size: 15px; }
 
 /* ── กล่องแสดงตัวเลขสรุป ── */
-.stat-row { display: flex; flex-wrap: wrap; gap: 14px; }
+.stat-row { display: flex; flex-wrap: wrap; gap: 18px; }
 .stat {
   flex: 1 1 200px;
-  background: #fff;
-  border: 1px solid var(--สีขอบ);
-  border-radius: 10px;
-  padding: 18px;
+  background: var(--สีพื้น);
+  border: none;
+  border-radius: 24px;
+  padding: 22px;
   text-align: center;
   text-decoration: none;
   color: inherit;
+  box-shadow: 8px 8px 18px var(--เงาเข้ม), -8px -8px 18px var(--เงาสว่าง);
+  transition: transform .15s;
 }
-.stat:hover { background: #eaf3fa; }
-.stat .number { font-size: 44px; font-weight: 700; line-height: 1.2; }
+.stat:hover { transform: translateY(-3px); }
+.stat .number { font-size: 44px; font-weight: 800; line-height: 1.2; color: var(--สีหลักเข้ม); }
 
 /* ── รายการข้อมูลในหน้ารายละเอียด ── */
-.field-row { display: flex; flex-wrap: wrap; gap: 4px 10px; padding: 7px 0; border-bottom: 1px dashed var(--สีขอบ); }
+.field-row { display: flex; flex-wrap: wrap; gap: 4px 10px; padding: 7px 0; border-bottom: 1px dashed var(--สีเส้นบาง); }
 .field-row .k { min-width: 150px; font-weight: 700; }
 
 /* ── มือถือ ── */
 @media (max-width: 640px) {
   body { font-size: 16px; }
-  .container { padding: 14px 12px 50px; }
+  .container { padding: 20px 12px 50px; }
   th, td { padding: 8px 7px; font-size: 15px; }
   .hide-mobile { display: none; }
   .navbar .nav-user { margin-left: 0; width: 100%; }

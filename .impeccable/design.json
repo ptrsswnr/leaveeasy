@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-12T00:00:00Z",
+  "title": "Design System: LeaveEasy",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Workshop Violet",
+        "canonical": "#8b5cf6",
+        "tonalRamp": ["#2e1065", "#4c1d95", "#5b21b6", "#6d28d9", "#7c3aed", "#8b5cf6", "#a78bfa", "#c4b5fd"]
+      },
+      "neutral-bg": {
+        "role": "neutral",
+        "displayName": "Clay Lavender",
+        "canonical": "#efe9ff",
+        "tonalRamp": ["#4c1d95", "#6d28d9", "#8b5cf6", "#c4b5fd", "#ddd3fb", "#efe9ff", "#f5f2ff", "#faf8ff"]
+      },
+      "neutral-text": {
+        "role": "neutral",
+        "displayName": "Ink Violet",
+        "canonical": "#362a5e",
+        "tonalRamp": ["#180f2e", "#241a45", "#362a5e", "#4a3a78", "#5f4d92", "#7c6fa0", "#9a8fba", "#c2bad8"]
+      },
+      "neutral-muted": {
+        "role": "neutral",
+        "displayName": "Dusty Plum",
+        "canonical": "#7c6fa0",
+        "tonalRamp": ["#3a3159", "#4f4374", "#655890", "#7c6fa0", "#9487b3", "#ada2c5", "#c6bdd8", "#e0daeb"]
+      },
+      "danger": { "role": "danger", "displayName": "Coral Reject", "canonical": "#fb7185" },
+      "success": { "role": "success", "displayName": "Mint Approve", "canonical": "#34d399" },
+      "status-pending-bg": { "role": "status", "displayName": "Amber Pending", "canonical": "#fef3c7" },
+      "status-approved-bg": { "role": "status", "displayName": "Mint Approved", "canonical": "#d1fae5" },
+      "status-rejected-bg": { "role": "status", "displayName": "Rose Rejected", "canonical": "#fecdd3" },
+      "status-ai-bg": { "role": "status", "displayName": "Violet AI Note", "canonical": "#ddd6fe" },
+      "neutral-surface-input": { "role": "neutral", "displayName": "Field White", "canonical": "#ffffff" }
+    },
+    "typographyMeta": {
+      "numeral": { "displayName": "Numeral", "purpose": "The big count on dashboard stat tiles only." },
+      "display": { "displayName": "Display", "purpose": "Page <h1> titles." },
+      "title": { "displayName": "Title", "purpose": "Section <h2> headings." },
+      "body": { "displayName": "Body", "purpose": "Running text and form input text." },
+      "label": { "displayName": "Label", "purpose": "Field labels, subtitles, hints, table headers, badges." }
+    },
+    "shadows": [
+      { "name": "clay-raised", "value": "10px 10px 22px rgba(139,122,191,0.45), -10px -10px 22px rgba(255,255,255,0.85)", "purpose": "Cards resting above the lavender ground." },
+      { "name": "clay-raised-sm", "value": "5px 5px 12px rgba(139,122,191,0.45), -5px -5px 12px rgba(255,255,255,0.85)", "purpose": "Buttons, badges, alerts, table rows." },
+      { "name": "clay-inset", "value": "inset 3px 3px 8px rgba(139,122,191,0.45), inset -3px -3px 8px rgba(255,255,255,0.85)", "purpose": "Form fields at rest; a clickable table row on hover." },
+      { "name": "clay-pressed", "value": "inset 4px 4px 10px rgba(0,0,0,0.25)", "purpose": "A button mid-click." }
+    ],
+    "motion": [
+      { "name": "press-lift", "value": "translateY(-2px) with brightness(0.95), 150ms", "purpose": "Button hover: lifts off the page and darkens slightly." },
+      { "name": "press-down", "value": "translateY(0) with clay-pressed shadow, 150ms", "purpose": "Button active/click: drops back and reads as pressed into the clay." }
+    ],
+    "breakpoints": [
+      { "name": "mobile", "value": "640px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Main call-to-action button (e.g. บันทึก, ส่งข้อความ).",
+      "html": "<button class=\"ds-btn-primary\">บันทึก</button>",
+      "css": ".ds-btn-primary { font-weight: 700; font-size: 17px; padding: 12px 24px; border-radius: 16px; border: none; background: #8b5cf6; color: #fff; cursor: pointer; box-shadow: 6px 6px 14px rgba(139,122,191,0.45), -6px -6px 14px rgba(255,255,255,0.85); transition: transform .15s, filter .15s; } .ds-btn-primary:hover { transform: translateY(-2px); filter: brightness(0.95); } .ds-btn-primary:active { box-shadow: inset 4px 4px 10px rgba(0,0,0,.25); transform: translateY(0); }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary action (e.g. ยกเลิก).",
+      "html": "<button class=\"ds-btn-ghost\">ยกเลิก</button>",
+      "css": ".ds-btn-ghost { font-weight: 700; font-size: 17px; padding: 12px 24px; border-radius: 16px; border: none; background: #efe9ff; color: #7c3aed; cursor: pointer; box-shadow: 6px 6px 14px rgba(139,122,191,0.45), -6px -6px 14px rgba(255,255,255,0.85); transition: transform .15s, filter .15s; } .ds-btn-ghost:hover { transform: translateY(-2px); filter: brightness(0.95); }"
+    },
+    {
+      "name": "Danger Button",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Destructive/reject action (e.g. ไม่อนุมัติ, ลบใบลานี้).",
+      "html": "<button class=\"ds-btn-danger\">ไม่อนุมัติ</button>",
+      "css": ".ds-btn-danger { font-weight: 700; font-size: 17px; padding: 12px 24px; border-radius: 16px; border: none; background: #fb7185; color: #fff; cursor: pointer; box-shadow: 6px 6px 14px rgba(139,122,191,0.45), -6px -6px 14px rgba(255,255,255,0.85); }"
+    },
+    {
+      "name": "Ok Button",
+      "kind": "button",
+      "refersTo": "button-ok",
+      "description": "Positive/approve action (e.g. อนุมัติ).",
+      "html": "<button class=\"ds-btn-ok\">อนุมัติ</button>",
+      "css": ".ds-btn-ok { font-weight: 700; font-size: 17px; padding: 12px 24px; border-radius: 16px; border: none; background: #34d399; color: #fff; cursor: pointer; box-shadow: 6px 6px 14px rgba(139,122,191,0.45), -6px -6px 14px rgba(255,255,255,0.85); }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "The one deliberate white surface in the system, for legibility.",
+      "html": "<input type=\"text\" class=\"ds-input\" placeholder=\"เช่น ลาพักร้อนไปเที่ยวกับครอบครัว\">",
+      "css": ".ds-input { font-size: 17px; width: 100%; padding: 12px 14px; border: 2px solid #fff; border-radius: 14px; background: #fff; color: #362a5e; box-shadow: inset 3px 3px 8px rgba(139,122,191,0.45), inset -3px -3px 8px rgba(255,255,255,0.85); } .ds-input:focus { outline: none; border-color: #8b5cf6; }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "The base container: shares the page's own lavender fill, depth from shadow alone.",
+      "html": "<div class=\"ds-card\">เนื้อหาในการ์ด</div>",
+      "css": ".ds-card { background: #efe9ff; border-radius: 24px; padding: 22px; box-shadow: 10px 10px 22px rgba(139,122,191,0.45), -10px -10px 22px rgba(255,255,255,0.85); }"
+    },
+    {
+      "name": "Pending Badge",
+      "kind": "chip",
+      "refersTo": "badge-pending",
+      "description": "Status pill for a leave request awaiting review.",
+      "html": "<span class=\"ds-badge ds-badge-pending\">รอพิจารณา</span>",
+      "css": ".ds-badge { display: inline-block; padding: 6px 16px; border-radius: 999px; font-size: 14px; font-weight: 700; box-shadow: 3px 3px 8px rgba(139,122,191,0.45), -3px -3px 8px rgba(255,255,255,0.85); } .ds-badge-pending { background: #fef3c7; color: #92400e; }"
+    },
+    {
+      "name": "Table Row",
+      "kind": "custom",
+      "refersTo": "table-row",
+      "description": "Each row is its own floating clay pill rather than a bordered grid line; clickable rows press inward on hover.",
+      "html": "<table class=\"ds-table\"><tbody><tr class=\"ds-row ds-row-clickable\"><td>ลาพักร้อนไปเที่ยวทะเล</td><td>รอพิจารณา</td></tr></tbody></table>",
+      "css": ".ds-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; } .ds-row { background: #efe9ff; box-shadow: 5px 5px 12px rgba(139,122,191,0.45), -5px -5px 12px rgba(255,255,255,0.85); border-radius: 16px; } .ds-row td { padding: 12px 14px; } .ds-row td:first-child { border-radius: 16px 0 0 16px; } .ds-row td:last-child { border-radius: 0 16px 16px 0; } .ds-row-clickable { cursor: pointer; } .ds-row-clickable:hover { box-shadow: inset 4px 4px 10px rgba(139,122,191,0.45), inset -4px -4px 10px rgba(255,255,255,0.85); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Clay Workshop",
+    "overview": "LeaveEasy's screens read like soft clay tiles pressed into a lavender tabletop — every card, button, table row, and stat tile is molded from the same pale-violet material as the page itself, and the only thing that tells one shape from another is light: a soft highlight catching its raised top-left edge, a soft shadow pooling at its bottom-right. Nothing is drawn with a hard line. The system is playful and tactile without being loud — the primary violet is reserved for things you can act on (buttons, links, the active nav item), so the calm lavender ground never fights for attention with the one color that means \"press me.\" This is an internal HR tool for a small workplace (20–100 people), not a marketing surface, so the fun stays in texture and touch rather than motion or noise: a button visibly presses inward when clicked, a table row presses in when you hover it, a form field sits in a crisp white slot so typing is never in doubt against the lavender field around it.",
+    "keyCharacteristics": [
+      "Every surface (cards, buttons at rest, stat tiles, nav) shares the page's own lavender fill — depth comes only from paired soft shadows, never a second background color.",
+      "Zero hairline borders anywhere except a 2px white ring around form fields, which exists purely so a field reads as legible on the lavender ground.",
+      "Status is still color-coded (amber/green/rose), but every status pill and alert is now a soft pill or rounded card with its own gentle shadow instead of a 1px tinted border."
+    ],
+    "rules": [
+      { "name": "The No-Border Rule", "body": "Every boundary is drawn by a paired soft shadow (a light highlight top-left, a soft dark shadow bottom-right), never a 1px border. The single exception is the 2px white ring on form fields — that ring exists to keep a field legible against the lavender ground, not to draw a boundary, and it turns violet on focus instead of gaining an outline.", "section": "colors" },
+      { "name": "The Monochrome Surface Rule", "body": "Cards, buttons-at-rest (ghost variant), stat tiles, table rows, and the navbar all share the page's own lavender fill. Nothing gets a second \"surface color\" — depth comes from shadow, and color stays reserved for what the user can act on.", "section": "colors" },
+      { "name": "The Light-From-Top-Left Rule", "body": "Every shadow pair keeps its highlight top-left and its shadow bottom-right, system-wide — a light source never shifts direction between components, or the clay illusion breaks.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep every card/button-ghost/stat-tile/row on the same Clay Lavender fill as the page — depth from shadow only.",
+      "Do keep the light-top-left / dark-bottom-right shadow direction consistent on every raised element.",
+      "Do keep form fields white — it's the system's one deliberate surface-color exception, and it exists for legibility.",
+      "Do keep the three status hues (amber/mint/rose) reserved for รอพิจารณา / อนุมัติ / ไม่อนุมัติ only — never reuse them decoratively."
+    ],
+    "donts": [
+      "Don't add a 1px border anywhere as a substitute for a shadow pair — that breaks the clay illusion instantly.",
+      "Don't give a card, stat tile, or button-ghost a background color different from the page background — a second \"card color\" contradicts the Monochrome Surface Rule.",
+      "Don't introduce a second display typeface — the system carries its whole hierarchy on one font stack and font-weight alone.",
+      "Don't flatten the pressed/active state to a plain color change — the inset-shadow \"press\" is this system's signature interaction; losing it makes buttons feel dead."
+    ]
+  }
+}
