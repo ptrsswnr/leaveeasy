@@ -10,6 +10,10 @@
   var รหัสใบลา = ค่าจากURL("id");
   var กล่องใบลา = document.getElementById("กล่องใบลา");
   var กล่องความเห็น = document.getElementById("กล่องความเห็น");
+  var กล่องสรุปAI = document.getElementById("กล่องสรุปAI");
+  var เตือนสรุปAI = document.getElementById("เตือนสรุปAI");
+  var ข้อความสรุปAI = document.getElementById("ข้อความสรุปAI");
+  var ปุ่มสรุปAI = document.getElementById("ปุ่มสรุปAI");
 
   var ใบ, ความเห็น;
   try {
@@ -43,6 +47,59 @@
     document.getElementById("กล่องเขียนความเห็น").classList.add("hidden");
   } else {
     document.getElementById("ปุ่มส่งความเห็น").addEventListener("click", ส่งความเห็น);
+  }
+
+  // สรุปโดย AI — สำหรับผู้อนุมัติ/ฝ่ายบุคคลอ่านก่อนกดอนุมัติเท่านั้น (US-09)
+  if (role === "manager" || role === "hr") {
+    กล่องสรุปAI.classList.remove("hidden");
+    if (ใบ.aiSuggestion) {
+      ข้อความสรุปAI.textContent = ใบ.aiSuggestion;
+      ข้อความสรุปAI.classList.remove("hidden");
+    }
+    ปุ่มสรุปAI.addEventListener("click", สรุปAI);
+  }
+
+  // ── ให้ AI สรุปใบลาสั้น ๆ ให้หัวหน้าอ่าน — ไม่แตะช่อง status เด็ดขาด ──
+  async function สรุปAI() {
+    เตือนสรุปAI.classList.add("hidden");
+    ปุ่มสรุปAI.disabled = true;
+    ปุ่มสรุปAI.textContent = "กำลังสรุป...";
+
+    var จำนวนวันลา = Math.round((new Date(ใบ.endDate) - new Date(ใบ.startDate)) / 86400000) + 1;
+
+    var คำสั่ง =
+      "คุณคือผู้ช่วยสรุปใบลาให้หัวหน้าอ่านก่อนตัดสินใจอนุมัติ\n" +
+      "ข้อมูลใบลา:\n" +
+      "- หัวข้อ: " + ใบ.title + "\n" +
+      "- ผู้ขอลา: " + ใบ.requesterName + "\n" +
+      "- ประเภทการลา: " + ใบ.leaveTypeName + "\n" +
+      "- วันที่ลา: " + ใบ.startDate + " ถึง " + ใบ.endDate + " (รวม " + จำนวนวันลา + " วัน)\n" +
+      "- เหตุผลการลา: \"" + ใบ.reason + "\"\n\n" +
+      "เขียนสรุปสั้น ๆ ไม่เกิน 2-3 ประโยค เป็นภาษาไทย ให้หัวหน้าอ่านแล้วเข้าใจเรื่องนี้ได้เร็ว " +
+      "ต้องระบุจำนวนวันลาที่ให้ไว้ข้างต้นในสรุปด้วยเสมอ " +
+      "ห้ามแนะนำว่าควรอนุมัติหรือไม่อนุมัติ สรุปข้อเท็จจริงเท่านั้น";
+
+    try {
+      var คำตอบ = await เรียกAI(คำสั่ง);
+
+      // เก็บ log ทุกครั้งที่เรียกไว้ก่อน แล้วค่อยอัปเดตสรุปล่าสุดที่โชว์บนหน้าจอ
+      await db.collection("leaveRequests").doc(ใบ.id).collection("aiLog").add({
+        input: คำสั่ง,
+        output: คำตอบ,
+        createdAt: เวลาตอนนี้()
+      });
+      await db.collection("leaveRequests").doc(ใบ.id).update({ aiSuggestion: คำตอบ });
+
+      ใบ.aiSuggestion = คำตอบ;
+      ข้อความสรุปAI.textContent = คำตอบ;
+      ข้อความสรุปAI.classList.remove("hidden");
+    } catch (err) {
+      เตือนสรุปAI.textContent = "⚠️ สรุปไม่สำเร็จ: " + err.message;
+      เตือนสรุปAI.classList.remove("hidden");
+    } finally {
+      ปุ่มสรุปAI.disabled = false;
+      ปุ่มสรุปAI.textContent = "🤖 ให้ AI ช่วยสรุปใบลา";
+    }
   }
 
   // ── วาดข้อมูลใบลาลงหน้าจอ ──

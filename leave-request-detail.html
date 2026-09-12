@@ -6,6 +6,8 @@
   <title>รายละเอียดใบลา · LeaveEasy</title>
   <link rel="stylesheet" href="css/style.css">
   <script src="js/util.js" defer></script>
+  <script src="js/openrouter-config.local.js" defer></script>
+  <script src="js/ai.js" defer></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" defer></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" defer></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" defer></script>
@@ -22,6 +24,15 @@
 
     <div id="กล่องใบลา" class="card">
       <p>กำลังโหลดข้อมูล…</p>
+    </div>
+
+    <div id="กล่องสรุปAI" class="card hidden">
+      <h2>สรุปโดย AI</h2>
+      <div id="เตือนสรุปAI" class="alert alert-error hidden"></div>
+      <p id="ข้อความสรุปAI" class="hint hidden"></p>
+      <div class="btn-row">
+        <button type="button" id="ปุ่มสรุปAI">🤖 ให้ AI ช่วยสรุปใบลา</button>
+      </div>
     </div>
 
     <div id="กล่องความเห็น" class="card hidden">

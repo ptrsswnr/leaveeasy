@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="css/style.css">
   <script src="js/util.js" defer></script>
   <script src="js/data.js" defer></script>
+  <script src="js/openrouter-config.local.js" defer></script>
+  <script src="js/ai.js" defer></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" defer></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" defer></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" defer></script>
@@ -28,14 +30,21 @@
       <form id="ฟอร์มใบลา">
         <label for="title">หัวข้อ</label>
         <input type="text" id="title" placeholder="เช่น ลาพักร้อนไปเที่ยวกับครอบครัว">
+        <p id="ป้ายAIหัวข้อ" class="hint hidden">🤖 ข้อเสนอจาก AI — โปรดตรวจสอบก่อนยืนยัน</p>
 
         <label for="reason">เหตุผลการลา</label>
         <textarea id="reason" placeholder="เล่าเหตุผลสั้น ๆ ให้หัวหน้าเข้าใจ"></textarea>
+
+        <div class="btn-row">
+          <button type="button" id="ปุ่มAIจัดประเภท">🤖 ให้ AI ช่วยจัดประเภทการลา</button>
+        </div>
+        <div id="เตือนAI" class="alert alert-error hidden"></div>
 
         <label for="leaveTypeId">ประเภทการลา</label>
         <select id="leaveTypeId">
           <option value="">— เลือกประเภทการลา —</option>
         </select>
+        <p id="ป้ายAI" class="hint hidden">🤖 ข้อเสนอจาก AI — โปรดตรวจสอบก่อนยืนยัน</p>
 
         <label for="startDate">วันที่เริ่มลา</label>
         <input type="date" id="startDate">

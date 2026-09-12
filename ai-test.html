@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ทดสอบ AI · LeaveEasy</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/util.js" defer></script>
+  <script src="js/openrouter-config.local.js" defer></script>
+  <script src="js/ai.js" defer></script>
+  <script src="js/ai-test.js" defer></script>
+</head>
+<body>
+  <div class="container">
+    <h1>ทดสอบ AI (OpenRouter)</h1>
+    <p class="subtitle">หน้าทดสอบเล็ก ๆ — พิมพ์ข้อความแล้วกดปุ่มเพื่อส่งไปยังโมเดล AI แล้วแสดงคำตอบ</p>
+
+    <div class="card">
+      <label for="ช่องข้อความ">ข้อความที่จะส่ง</label>
+      <input type="text" id="ช่องข้อความ" value="สวัสดี">
+
+      <div class="btn-row">
+        <button type="button" id="ปุ่มส่งข้อความ">ส่งข้อความ</button>
+      </div>
+
+      <div id="ข้อความเตือน" class="alert alert-error hidden"></div>
+      <pre id="กล่องคำตอบ" class="hidden"></pre>
+    </div>
+  </div>
+</body>
+</html>
